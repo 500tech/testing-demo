@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Flex, Box } from 'reflexbox/styled-components';
-import { Input, Button } from './common';
+import { Input, Button } from '../common';
 
 const FormButton = styled(Button)`
   :disabled {
