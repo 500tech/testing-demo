@@ -1,76 +1,80 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
-import { shallow, mount } from 'enzyme';
+import { render as _render, fireEvent } from '@testing-library/react';
 import { lightTheme } from '../../theme';
 import { TodoAdder } from '.';
 
 const render = instance =>
-  mount(<ThemeProvider theme={lightTheme}>{instance}</ThemeProvider>);
+  _render(<ThemeProvider theme={lightTheme}>{instance}</ThemeProvider>);
 
 describe('TodoAdder', () => {
   it('changes state when updated', () => {
-    const wrapper = shallow(<TodoAdder />);
-    wrapper.instance().onChangeText({
+    const { queryByPlaceholderText } = render(<TodoAdder />);
+    const input = queryByPlaceholderText(/enter/i);
+    expect(input).not.toBeNull();
+    expect(input).toHaveValue('');
+    fireEvent.change(input, {
       target: {
         value: 'foo bar',
       },
     });
-    const { text } = wrapper.instance().state;
-    expect(text).toBe('foo bar');
+    expect(input).toHaveValue('foo bar');
   });
 
   it('clears text when typing "clear"', () => {
-    const wrapper = shallow(<TodoAdder />);
-    wrapper.instance().onChangeText({
+    const { getByPlaceholderText } = render(<TodoAdder />);
+    const input = getByPlaceholderText(/enter/i);
+    fireEvent.change(input, {
       target: {
         value: 'foo bar',
       },
     });
-    wrapper.instance().onChangeText({
+    fireEvent.change(input, {
       target: {
-        value: 'foo bar clear',
+        value: 'foo barclear',
       },
     });
-    const { text } = wrapper.instance().state;
-    expect(text).toBe('');
+    expect(input).toHaveValue('');
   });
 
   it('submitting calls add function', () => {
     const onAdd = jest.fn();
-    const preventDefault = jest.fn();
-    const wrapper = shallow(<TodoAdder onAdd={onAdd} />);
-    wrapper.instance().onChangeText({
+    const { getByPlaceholderText } = render(<TodoAdder onAdd={onAdd} />);
+    const input = getByPlaceholderText(/enter/i);
+    fireEvent.change(input, {
       target: {
         value: 'foo bar',
       },
     });
-    const e = { preventDefault };
-    wrapper.instance().onSubmit(e);
+    fireEvent.submit(input);
     expect(onAdd).toHaveBeenCalledWith('foo bar');
-    expect(preventDefault).toHaveBeenCalled();
-    expect(wrapper.instance().state.text).toBe('');
+    expect(input).toHaveValue('');
   });
 
   it('does not allow submitting when there is no text', () => {
     const onAdd = jest.fn();
-    const wrapper = render(<TodoAdder onAdd={onAdd} />);
-    wrapper.find('button').simulate('submit');
+    const { getByPlaceholderText, getByText } = render(
+      <TodoAdder onAdd={onAdd} />
+    );
+    const input = getByPlaceholderText(/enter/i);
+    const btn = getByText(/add/i);
+    expect(btn).not.toBeVisible();
+    fireEvent.submit(btn);
     expect(onAdd).not.toHaveBeenCalled();
-    wrapper
-      .find(TodoAdder)
-      .instance()
-      .onChangeText({
-        target: {
-          value: 'foo bar',
-        },
-      });
-    wrapper.find('button').simulate('submit');
+
+    fireEvent.change(input, {
+      target: {
+        value: 'foo bar',
+      },
+    });
+    expect(btn).toBeVisible();
+    fireEvent.submit(btn);
     expect(onAdd).toHaveBeenCalled();
   });
 
   it('autofocuses on input', () => {
-    const wrapper = render(<TodoAdder />);
-    const input = wrapper.find('input');
-    expect(document.activeElement).toBe(input.getDOMNode());
+    const { getByPlaceholderText } = render(<TodoAdder />);
+    const input = getByPlaceholderText(/enter/i);
+    expect(input).toHaveFocus();
   });
 });
