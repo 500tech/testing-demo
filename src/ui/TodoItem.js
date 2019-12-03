@@ -15,7 +15,7 @@ const Card = styled.li`
   list-style: none;
   text-decoration: ${props => (props.done ? 'line-through' : 'none')};
   font-size: 20px;
-  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: ${props => props.theme.palette.shadow(4)};
   cursor: pointer;
 `;
 

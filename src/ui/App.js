@@ -26,9 +26,9 @@ export function App() {
         <Title>Today's Tasks</Title>
         <hr />
       </Box>
-      <Box as="section" width="700px">
+      <Flex as="section" width="700px" flexDirection="column">
         <TodoList />
-      </Box>
+      </Flex>
     </Page>
   );
 }
