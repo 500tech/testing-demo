@@ -1,22 +1,35 @@
-import React from "react";
+import React from 'react';
+import styled from 'styled-components';
+import { Flex, Box } from 'reflexbox/styled-components';
+import { TodoList } from './TodoList';
 
-function App() {
+const Page = styled(Flex).attrs({
+  height: '100%',
+  width: '100%',
+  flexDirection: 'column',
+  alignItems: 'center',
+})`
+  background-color: ${props => props.theme.palette.background};
+  color: ${props => props.theme.palette.text};
+  font-family: monospace;
+`;
+
+const Title = styled.h1`
+  text-transform: uppercase;
+  text-align: center;
+`;
+
+export function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Page>
+      <Box as="header" width="700px">
+        <Title>Today's Tasks</Title>
+        <hr />
+      </Box>
+      <Box as="section" width="700px">
+        <TodoList />
+      </Box>
+    </Page>
   );
 }
 
