@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Flex, Box } from 'reflexbox/styled-components';
 import { TodoList } from './TodoList';
+import { TodoAdder } from './TodoAdder';
+import useTodosService from '../services/todos';
 
 const Page = styled(Flex).attrs({
   height: '100%',
@@ -20,6 +22,7 @@ const Title = styled.h1`
 `;
 
 export function App() {
+  const addTodo = useTodosService(({ addTodo }) => addTodo);
   return (
     <Page>
       <Box as="header" width="700px">
@@ -27,6 +30,7 @@ export function App() {
         <hr />
       </Box>
       <Flex as="section" width="700px" flexDirection="column">
+        <TodoAdder onAdd={addTodo} />
         <TodoList />
       </Flex>
     </Page>

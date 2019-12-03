@@ -26,6 +26,12 @@ const [useTodosService] = create(_set => {
           state.todos.splice(todoIndex, 1);
         }
       }),
+    addTodo: text => {
+      set(state => {
+        const todo = { id: uuid(), text, completed: false };
+        state.todos.unshift(todo);
+      });
+    },
   };
 });
 
